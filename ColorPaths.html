@@ -15,15 +15,15 @@
 	</style>
 </head>
 <body>
-	<!--<canvas id="canvas" width="600" height="600"></canvas>-->
-	<canvas id="canvas" width="1920" height="1080"></canvas>
+	<canvas id="canvas" width="600" height="600"></canvas>
+	<!--<canvas id="canvas" width="1920" height="1080"></canvas>-->
 	<div>
 		<button id="iterate" type="button" class="button" value="iterate" onclick="refresh()"></button>
 	</div>
 	<div>
 		<form>
 			<lable for="tileSizeInput">Tile Size:</lable>
-			<input type="range" min="2" max="100" step="1" value="10" class="slider" id="tileSizeInput">
+			<input type="range" min="1" max="100" step="1" value="10" class="slider" id="tileSizeInput">
 			<span id="tileSizeOutput">10</span><br>
 			<input type="button" value="submit" onclick="pushChanges()">
 		</form>
@@ -115,7 +115,7 @@
 				let num2 = randInt(0, Math.floor(canvas.height / tileSize) - 1);
 	
 				seeds.push(map[num1][num2]);
-				map[num1][num2].color = "rgb(235, 52, 186)"//randColor();
+				map[num1][num2].color = randColor();//"rgb(235, 52, 186)";
 			}
 		}
 
@@ -152,7 +152,7 @@
 				newTileSize++;
 			}
 
-			console.log(newTileSize);
+			//console.log(newTileSize);
 
 			tileSize = newTileSize;
 
@@ -195,12 +195,14 @@
 
 				let adj = [];
 
+				// select random number of neighbours to check
 				for(var i = 0; i < grid.length; i++) {
-					if(randInt(0, 2) > 0) {
+					if(randInt(0, 1) < 1) {
 						adj.push(grid[i]);
 					}
 				}
 
+				// spread color to chosen neighbours
 				for(var i = 0; i < adj.length; i++) {
 
 					if(s.x + adj[i].x < 0 || s.y + adj[i].y < 0) {
@@ -217,6 +219,21 @@
 						current.color = mixColor(s.color, 25);
 					}
 				}
+
+				for(var i = 0; i < grid.length; i++) {
+
+					if(s.x + grid[i].x < 0 || s.y + grid[i].y < 0) {
+						continue;
+					}
+					if(s.x + grid[i].x >= canvas.width / tileSize || s.y + grid[i].y >= canvas.height / tileSize) {
+						continue;
+					}
+
+					if(map[s.x + grid[i].x][s.y + grid[i].y].color == defColor) {
+						temp.push(s);
+					}
+				}
+
 			});
 
 			seeds = temp;
